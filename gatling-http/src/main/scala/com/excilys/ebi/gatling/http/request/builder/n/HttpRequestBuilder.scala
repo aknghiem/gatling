@@ -21,6 +21,9 @@ object HttpRequestBuilder {
 class HttpRequestBuilder(val httpRequestActionBuilder: HttpRequestActionBuilder, method: String, urlFunction: Context => String,
 		queryParams: List[(Context => String, Context => String)], headers: Map[String, String], followsRedirects: Option[Boolean], credentials: Option[(String, String)]) {
 
+	def newInstanceWithQueryParam(paramKeyFunc: Context => String, paramValueFunc: Context => String) =
+		new HttpRequestBuilder(httpRequestActionBuilder, method, urlFunction, (paramKeyFunc, paramValueFunc) :: queryParams, headers, followsRedirects, credentials)
+
 	/**
 	 * This method actually fills the request builder to avoid race conditions
 	 *
