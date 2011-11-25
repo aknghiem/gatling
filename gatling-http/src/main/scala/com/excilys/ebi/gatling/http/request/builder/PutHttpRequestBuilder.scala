@@ -36,13 +36,13 @@ class PutHttpRequestBuilder(httpRequestActionBuilder: HttpRequestActionBuilder, 
 		extends AbstractHttpRequestWithBodyBuilder[PutHttpRequestBuilder](httpRequestActionBuilder, "PUT", urlFunction, queryParams, headers, body, followsRedirects, credentials) {
 
 	def newInstanceWithQueryParam(paramKeyFunc: Context => String, paramValueFunc: Context => String) =
-		new PutHttpRequestBuilder(httpRequestActionBuilder, urlFunction, (paramKeyFunc, paramValueFunc) :: queryParams, headers, body, followsRedirects, credentials) with HttpRequestBuilderQueryParam
+		new PutHttpRequestBuilder(httpRequestActionBuilder, urlFunction, (paramKeyFunc, paramValueFunc) :: queryParams, headers, body, followsRedirects, credentials) with HttpRequestBuilderQueryParam with HttpRequestBuilderBody
 
 	def newInstanceWithHeaders(givenHeaders: Map[String, String]) =
-		new PutHttpRequestBuilder(httpRequestActionBuilder, urlFunction, queryParams, headers ++ givenHeaders, body, followsRedirects, credentials) with HttpRequestBuilderHeader
+		new PutHttpRequestBuilder(httpRequestActionBuilder, urlFunction, queryParams, headers ++ givenHeaders, body, followsRedirects, credentials) with HttpRequestBuilderHeader with HttpRequestBuilderBody
 
 	def newInstanceWithHeader(header: (String, String)) =
-		new PutHttpRequestBuilder(httpRequestActionBuilder, urlFunction, queryParams, headers + (header._1 -> header._2), body, followsRedirects, credentials) with HttpRequestBuilderContentType
+		new PutHttpRequestBuilder(httpRequestActionBuilder, urlFunction, queryParams, headers + (header._1 -> header._2), body, followsRedirects, credentials) with HttpRequestBuilderContentType with HttpRequestBuilderBody
 
 	def newInstanceWithContentType(mimeType: String) =
 		new PutHttpRequestBuilder(httpRequestActionBuilder, urlFunction, queryParams, headers ++ Map(ACCEPT -> mimeType, CONTENT_TYPE -> mimeType), body, followsRedirects, credentials) with HttpRequestBuilderBody

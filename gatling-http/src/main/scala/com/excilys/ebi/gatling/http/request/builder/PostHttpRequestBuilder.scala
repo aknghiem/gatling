@@ -37,16 +37,16 @@ class PostHttpRequestBuilder(httpRequestActionBuilder: HttpRequestActionBuilder,
 		extends AbstractHttpRequestWithBodyAndParamBuilder[PostHttpRequestBuilder](httpRequestActionBuilder, "POST", urlFunction, queryParams, params, headers, body, followsRedirects, credentials) {
 
 	def newInstanceWithQueryParam(paramKeyFunc: Context => String, paramValueFunc: Context => String) =
-		new PostHttpRequestBuilder(httpRequestActionBuilder, urlFunction, (paramKeyFunc, paramValueFunc) :: queryParams, params, headers, body, followsRedirects, credentials) with HttpRequestBuilderQueryParam
+		new PostHttpRequestBuilder(httpRequestActionBuilder, urlFunction, (paramKeyFunc, paramValueFunc) :: queryParams, params, headers, body, followsRedirects, credentials) with HttpRequestBuilderQueryParam with HttpRequestBuilderBody with HttpRequestBuilderParam
 
 	def newInstanceWithHeaders(givenHeaders: Map[String, String]) =
-		new PostHttpRequestBuilder(httpRequestActionBuilder, urlFunction, queryParams, params, headers ++ givenHeaders, body, followsRedirects, credentials) with HttpRequestBuilderHeader
+		new PostHttpRequestBuilder(httpRequestActionBuilder, urlFunction, queryParams, params, headers ++ givenHeaders, body, followsRedirects, credentials) with HttpRequestBuilderHeader with HttpRequestBuilderBody with HttpRequestBuilderParam
 
 	def newInstanceWithHeader(header: (String, String)) =
-		new PostHttpRequestBuilder(httpRequestActionBuilder, urlFunction, queryParams, params, headers + (header._1 -> header._2), body, followsRedirects, credentials) with HttpRequestBuilderContentType
+		new PostHttpRequestBuilder(httpRequestActionBuilder, urlFunction, queryParams, params, headers + (header._1 -> header._2), body, followsRedirects, credentials) with HttpRequestBuilderContentType with HttpRequestBuilderBody with HttpRequestBuilderParam
 
 	def newInstanceWithContentType(mimeType: String) =
-		new PostHttpRequestBuilder(httpRequestActionBuilder, urlFunction, queryParams, params, headers ++ Map(ACCEPT -> mimeType, CONTENT_TYPE -> mimeType), body, followsRedirects, credentials) with HttpRequestBuilderBody
+		new PostHttpRequestBuilder(httpRequestActionBuilder, urlFunction, queryParams, params, headers ++ Map(ACCEPT -> mimeType, CONTENT_TYPE -> mimeType), body, followsRedirects, credentials) with HttpRequestBuilderBody with HttpRequestBuilderParam
 
 	def newInstanceWithFollowsRedirect(followRedirect: Boolean) =
 		new PostHttpRequestBuilder(httpRequestActionBuilder, urlFunction, queryParams, params, headers, body, Some(followRedirect), credentials)

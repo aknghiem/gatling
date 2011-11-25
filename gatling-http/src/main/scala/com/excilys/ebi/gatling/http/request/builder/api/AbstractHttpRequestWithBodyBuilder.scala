@@ -52,6 +52,12 @@ abstract class AbstractHttpRequestWithBodyBuilder[B <: AbstractHttpRequestWithBo
 	queryParams: List[(Context => String, Context => String)], headers: Map[String, String], body: Option[HttpRequestBody], followsRedirects: Option[Boolean], credentials: Option[(String, String)])
 		extends AbstractHttpRequestBuilder[B](httpRequestActionBuilder, method, urlFunction, queryParams, headers, followsRedirects, credentials) {
 
+	def newInstanceWithQueryParam(paramKeyFunc: Context => String, paramValueFunc: Context => String): B with HttpRequestBuilderQueryParam with HttpRequestBuilderBody
+
+	def newInstanceWithHeaders(givenHeaders: Map[String, String]): B with HttpRequestBuilderHeader with HttpRequestBuilderBody
+
+	def newInstanceWithHeader(header: (String, String)): B with HttpRequestBuilderContentType with HttpRequestBuilderBody
+
 	def newInstanceWithContentType(mimeType: String): B with HttpRequestBuilderBody
 
 	def newInstanceWithStringBody(body: String): B with HttpRequestBuilderOptions
@@ -60,6 +66,9 @@ abstract class AbstractHttpRequestWithBodyBuilder[B <: AbstractHttpRequestWithBo
 
 	def newInstanceWithTemplateBody(tplPath: String, values: Map[String, Context => String]): B with HttpRequestBuilderOptions
 
+	def newInstanceWithFollowsRedirect(followRedirect: Boolean): B
+
+	def newInstanceWithCredentials(username: String, password: String): B
 	override def getRequestBuilder(context: Context): RequestBuilder = {
 		val requestBuilder = super.getRequestBuilder(context)
 		requestBuilder setMethod method

@@ -29,6 +29,8 @@ import akka.actor.TypedActor
 import com.excilys.ebi.gatling.http.request.builder.api.AbstractHttpRequestBuilder
 import com.excilys.ebi.gatling.http.check.HttpCheckBuilder
 import com.excilys.ebi.gatling.http.request.builder.api.HttpRequestBuilderQueryParam
+import com.excilys.ebi.gatling.http.request.builder.api.HttpRequestBuilderBody
+import com.excilys.ebi.gatling.http.request.builder.api.HttpRequestBuilderParam
 
 /**
  * HttpRequestActionBuilder class companion
@@ -78,14 +80,14 @@ class HttpRequestActionBuilder(val requestName: String, request: HttpRequest, ne
 	 * @param url the url on which this request will be made
 	 * @param interpolations context keys for interpolation
 	 */
-	def delete(url: String): DeleteHttpRequestBuilder with HttpRequestBuilderQueryParam = delete(interpolate(url))
+	def delete(url: String): DeleteHttpRequestBuilder with HttpRequestBuilderQueryParam with HttpRequestBuilderBody = delete(interpolate(url))
 
 	/**
 	 * Starts the definition of an HTTP request with word DELETE
 	 *
 	 * @param f the function returning the url of this request
 	 */
-	def delete(f: Context => String) = new DeleteHttpRequestBuilder(this, f, Nil, Map(), None, None, None) with HttpRequestBuilderQueryParam
+	def delete(f: Context => String) = new DeleteHttpRequestBuilder(this, f, Nil, Map(), None, None, None) with HttpRequestBuilderQueryParam with HttpRequestBuilderBody
 
 	/**
 	 * Starts the definition of an HTTP request with word GET
@@ -108,14 +110,14 @@ class HttpRequestActionBuilder(val requestName: String, request: HttpRequest, ne
 	 * @param url the url on which this request will be made
 	 * @param interpolations context keys for interpolation
 	 */
-	def post(url: String): PostHttpRequestBuilder with HttpRequestBuilderQueryParam = post(interpolate(url))
+	def post(url: String): PostHttpRequestBuilder with HttpRequestBuilderQueryParam with HttpRequestBuilderBody with HttpRequestBuilderParam = post(interpolate(url))
 
 	/**
 	 * Starts the definition of an HTTP request with word POST
 	 *
 	 * @param f the function returning the url of this request
 	 */
-	def post(f: Context => String) = new PostHttpRequestBuilder(this, f, Nil, Nil, Map(), None, None, None) with HttpRequestBuilderQueryParam
+	def post(f: Context => String) = new PostHttpRequestBuilder(this, f, Nil, Nil, Map(), None, None, None) with HttpRequestBuilderQueryParam with HttpRequestBuilderBody with HttpRequestBuilderParam
 
 	/**
 	 * Starts the definition of an HTTP request with word PUT
@@ -123,13 +125,13 @@ class HttpRequestActionBuilder(val requestName: String, request: HttpRequest, ne
 	 * @param url the url on which this request will be made
 	 * @param interpolations context keys for interpolation
 	 */
-	def put(url: String): PutHttpRequestBuilder with HttpRequestBuilderQueryParam = put(interpolate(url))
+	def put(url: String): PutHttpRequestBuilder with HttpRequestBuilderQueryParam with HttpRequestBuilderBody = put(interpolate(url))
 
 	/**
 	 * Starts the definition of an HTTP request with word PUT
 	 *
 	 * @param f the function returning the url of this request
 	 */
-	def put(f: Context => String) = new PutHttpRequestBuilder(this, f, Nil, Map(), None, None, None) with HttpRequestBuilderQueryParam
+	def put(f: Context => String) = new PutHttpRequestBuilder(this, f, Nil, Map(), None, None, None) with HttpRequestBuilderQueryParam with HttpRequestBuilderBody
 }
 

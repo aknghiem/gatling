@@ -39,6 +39,14 @@ abstract class AbstractHttpRequestWithBodyAndParamBuilder[B <: AbstractHttpReque
 	followsRedirects: Option[Boolean], credentials: Option[(String, String)])
 		extends AbstractHttpRequestWithBodyBuilder[B](httpRequestActionBuilder, method, urlFunction, queryParams, headers, body, followsRedirects, credentials) {
 
+	def newInstanceWithQueryParam(paramKeyFunc: Context => String, paramValueFunc: Context => String): B with HttpRequestBuilderQueryParam with HttpRequestBuilderBody with HttpRequestBuilderParam
+
+	def newInstanceWithHeaders(givenHeaders: Map[String, String]): B with HttpRequestBuilderHeader with HttpRequestBuilderBody with HttpRequestBuilderParam
+
+	def newInstanceWithHeader(header: (String, String)): B with HttpRequestBuilderContentType with HttpRequestBuilderBody with HttpRequestBuilderParam
+
+	def newInstanceWithContentType(mimeType: String): B with HttpRequestBuilderBody with HttpRequestBuilderParam
+
 	def newInstanceWithStringBody(body: String): B with HttpRequestBuilderParam
 
 	def newInstanceWithFileBody(filePath: String): B with HttpRequestBuilderParam

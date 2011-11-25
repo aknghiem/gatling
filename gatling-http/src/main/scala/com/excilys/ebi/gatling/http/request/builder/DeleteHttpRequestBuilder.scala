@@ -27,6 +27,7 @@ import com.excilys.ebi.gatling.http.Predef._
 import com.excilys.ebi.gatling.http.request._
 import com.excilys.ebi.gatling.http.request.builder.api.HttpRequestBuilderBody
 import com.excilys.ebi.gatling.http.request.builder.api.HttpRequestBuilderQueryParam
+import api.HttpRequestBuilderBody
 
 /**
  * This class defines an HTTP request with word DELETE in the DSL
@@ -36,13 +37,13 @@ class DeleteHttpRequestBuilder(httpRequestActionBuilder: HttpRequestActionBuilde
 		extends AbstractHttpRequestWithBodyBuilder[DeleteHttpRequestBuilder](httpRequestActionBuilder, "DELETE", urlFunction, queryParams, headers, body, followsRedirects, credentials) {
 
 	def newInstanceWithQueryParam(paramKeyFunc: Context => String, paramValueFunc: Context => String) =
-		new DeleteHttpRequestBuilder(httpRequestActionBuilder, urlFunction, (paramKeyFunc, paramValueFunc) :: queryParams, headers, body, followsRedirects, credentials) with HttpRequestBuilderQueryParam
+		new DeleteHttpRequestBuilder(httpRequestActionBuilder, urlFunction, (paramKeyFunc, paramValueFunc) :: queryParams, headers, body, followsRedirects, credentials) with HttpRequestBuilderQueryParam with HttpRequestBuilderBody
 
 	def newInstanceWithHeaders(givenHeaders: Map[String, String]) =
-		new DeleteHttpRequestBuilder(httpRequestActionBuilder, urlFunction, queryParams, headers ++ givenHeaders, body, followsRedirects, credentials) with HttpRequestBuilderHeader
+		new DeleteHttpRequestBuilder(httpRequestActionBuilder, urlFunction, queryParams, headers ++ givenHeaders, body, followsRedirects, credentials) with HttpRequestBuilderHeader with HttpRequestBuilderBody
 
 	def newInstanceWithHeader(header: (String, String)) =
-		new DeleteHttpRequestBuilder(httpRequestActionBuilder, urlFunction, queryParams, headers + (header._1 -> header._2), body, followsRedirects, credentials) with HttpRequestBuilderContentType
+		new DeleteHttpRequestBuilder(httpRequestActionBuilder, urlFunction, queryParams, headers + (header._1 -> header._2), body, followsRedirects, credentials) with HttpRequestBuilderContentType with HttpRequestBuilderBody
 
 	def newInstanceWithContentType(mimeType: String) =
 		new DeleteHttpRequestBuilder(httpRequestActionBuilder, urlFunction, queryParams, headers ++ Map(ACCEPT -> mimeType, CONTENT_TYPE -> mimeType), body, followsRedirects, credentials) with HttpRequestBuilderBody
