@@ -18,9 +18,8 @@ package com.excilys.ebi.gatling.http.request
 import com.excilys.ebi.gatling.core.action.request.Request
 import com.excilys.ebi.gatling.core.context.Context
 import com.excilys.ebi.gatling.core.log.Logging
-import com.excilys.ebi.gatling.http.request.builder.AbstractHttpRequestBuilder
+import com.excilys.ebi.gatling.http.request.builder.api.AbstractHttpRequestBuilder
 import com.ning.http.client.{ Request => AHCRequest }
-import com.excilys.ebi.gatling.http.request.builder.n.HttpRequestBuilder
 
 /**
  * This class wraps an HTTP Request
@@ -28,7 +27,7 @@ import com.excilys.ebi.gatling.http.request.builder.n.HttpRequestBuilder
  * @param givenName the name of the request
  * @param httpRequestBuilder the httpRequestBuilder that will build the actual HTTP request
  */
-class HttpRequest(givenName: String, val httpRequestBuilder: HttpRequestBuilder) extends Request(givenName) with Logging {
+class HttpRequest(givenName: String, val httpRequestBuilder: AbstractHttpRequestBuilder[_]) extends Request(givenName) with Logging {
 
 	/**
 	 * Builds and returns the actual Request

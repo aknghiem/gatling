@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.excilys.ebi.gatling.http.request.builder
+package com.excilys.ebi.gatling.http.request.builder.api
 
 import com.excilys.ebi.gatling.core.context.Context
 import com.excilys.ebi.gatling.http.action.HttpRequestActionBuilder
@@ -34,50 +34,24 @@ import com.excilys.ebi.gatling.core.util.StringHelper._
  * @param followsRedirects sets the follow redirect option of AHC
  * @param credentials sets the credentials in case of Basic HTTP Authentication
  */
-abstract class AbstractHttpRequestWithBodyAndParamsBuilder[B <: AbstractHttpRequestWithBodyAndParamsBuilder[B]](httpRequestActionBuilder: HttpRequestActionBuilder,
+abstract class AbstractHttpRequestWithBodyAndParamBuilder[B <: AbstractHttpRequestWithBodyAndParamBuilder[B]](httpRequestActionBuilder: HttpRequestActionBuilder, method: String,
 	urlFunction: Context => String, queryParams: List[(Context => String, Context => String)], params: List[(Context => String, Context => String)], headers: Map[String, String], body: Option[HttpRequestBody],
 	followsRedirects: Option[Boolean], credentials: Option[(String, String)])
-		extends AbstractHttpRequestWithBodyBuilder[B](httpRequestActionBuilder, urlFunction, queryParams, headers, body, followsRedirects, credentials) {
+		extends AbstractHttpRequestWithBodyBuilder[B](httpRequestActionBuilder, method, urlFunction, queryParams, headers, body, followsRedirects, credentials) {
+
+	def newInstanceWithStringBody(body: String): B with HttpRequestBuilderParam
+
+	def newInstanceWithFileBody(filePath: String): B with HttpRequestBuilderParam
+
+	def newInstanceWithTemplateBody(tplPath: String, values: Map[String, Context => String]): B with HttpRequestBuilderParam
+
+	def newInstanceWithParam(paramKeyFunc: Context => String, paramValueFunc: Context => String): B with HttpRequestBuilderOptions
 
 	override def getRequestBuilder(context: Context): RequestBuilder = {
 		val requestBuilder = super.getRequestBuilder(context)
 		addParamsTo(requestBuilder, context)
 		requestBuilder
 	}
-
-	/**
-	 * Method overridden in children to create a new instance of the correct type
-	 *
-	 * @param httpRequestActionBuilder the HttpRequestActionBuilder with which this builder is linked
-	 * @param urlFunction the function returning the url
-	 * @param queryParams the query parameters that should be added to the request
-	 * @param params the parameters that should be added to the request
-	 * @param headers the headers that should be added to the request
-	 * @param body the body that should be added to the request
-	 * @param followsRedirects sets the follow redirect option of AHC
-	 * @param credentials sets the credentials in case of Basic HTTP Authentication
-	 */
-	def newInstance(httpRequestActionBuilder: HttpRequestActionBuilder, urlFunction: Context => String, queryParams: List[(Context => String, Context => String)], params: List[(Context => String, Context => String)], headers: Map[String, String], body: Option[HttpRequestBody], followsRedirects: Option[Boolean], credentials: Option[(String, String)]): B
-
-	def newInstance(httpRequestActionBuilder: HttpRequestActionBuilder, urlFunction: Context => String, queryParams: List[(Context => String, Context => String)], headers: Map[String, String], body: Option[HttpRequestBody], followsRedirects: Option[Boolean], credentials: Option[(String, String)]): B = {
-		newInstance(httpRequestActionBuilder, urlFunction, queryParams, params, headers, body, followsRedirects, credentials)
-	}
-
-	/**
-	 *
-	 */
-	def param(paramKeyFunction: Context => String, paramValueFunction: Context => String): B =
-		newInstance(httpRequestActionBuilder, urlFunction, queryParams, (paramKeyFunction, paramValueFunction) :: params, headers, body, followsRedirects, credentials)
-
-	/**
-	 * Adds a parameter to the request
-	 *
-	 * @param paramKey the key of the parameter
-	 * @param paramValue the value of the parameter
-	 */
-	def param(paramKey: String, paramValue: String): B = param(interpolate(paramKey), interpolate(paramValue))
-
-	def param(paramKey: String): B = param(paramKey, EL_START + paramKey + EL_END)
 
 	/**
 	 * This method adds the parameters to the request builder

@@ -32,6 +32,7 @@ object Predef {
 
 	implicit def intToString(i: Int) = CheckBuilder.intToString(i)
 
+	/* DSL Methods (Checks) */
 	def regexp(what: Context => String) = HttpBodyRegExpCheckBuilder.regexp(what)
 	def regexp(expression: String) = HttpBodyRegExpCheckBuilder.regexp(expression)
 
@@ -43,6 +44,12 @@ object Predef {
 
 	def status = HttpStatusCheckBuilder.status
 
+	/* MIME types */
+	val APPLICATION_JSON = "application/json"
+	val APPLICATION_XML = "application/xml"
+	val MULTIPART_FORM_DATA = "multipart/form-data"
+
+	/* Headers */
 	val ACCEPT = "Accept";
 	val ACCEPT_CHARSET = "Accept-Charset";
 	val ACCEPT_ENCODING = "Accept-Encoding";

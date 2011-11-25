@@ -15,22 +15,55 @@
  */
 package com.excilys.ebi.gatling.http.request.builder
 
-import scala.annotation.implicitNotFound
-
 import com.excilys.ebi.gatling.core.context.Context
 import com.excilys.ebi.gatling.http.action.HttpRequestActionBuilder
 import com.excilys.ebi.gatling.http.request.HttpRequestBody
+import com.excilys.ebi.gatling.http.request.builder.api.AbstractHttpRequestWithBodyAndParamBuilder
+import com.excilys.ebi.gatling.http.request.builder.api.HttpRequestBuilderHeaders
+import com.excilys.ebi.gatling.http.request.builder.api.HttpRequestBuilderHeader
+import com.excilys.ebi.gatling.http.request.builder.api.HttpRequestBuilderContentType
+import com.excilys.ebi.gatling.http.request.builder.api.HttpRequestBuilderOptions
+import com.excilys.ebi.gatling.http.Predef._
+import com.excilys.ebi.gatling.http.request.builder.api.HttpRequestBuilderBody
+import com.excilys.ebi.gatling.http.request._
+import com.excilys.ebi.gatling.http.request.builder.api.HttpRequestBuilderParam
+import com.excilys.ebi.gatling.http.request.builder.api.HttpRequestBuilderQueryParam
 
 /**
  * This class defines an HTTP request with word POST in the DSL
  */
 class PostHttpRequestBuilder(httpRequestActionBuilder: HttpRequestActionBuilder, urlFunction: Context => String, queryParams: List[(Context => String, Context => String)], params: List[(Context => String, Context => String)],
 	headers: Map[String, String], body: Option[HttpRequestBody], followsRedirects: Option[Boolean], credentials: Option[(String, String)])
-		extends AbstractHttpRequestWithBodyAndParamsBuilder[PostHttpRequestBuilder](httpRequestActionBuilder, urlFunction, queryParams, params, headers, body, followsRedirects, credentials) {
+		extends AbstractHttpRequestWithBodyAndParamBuilder[PostHttpRequestBuilder](httpRequestActionBuilder, "POST", urlFunction, queryParams, params, headers, body, followsRedirects, credentials) {
 
-	def newInstance(httpRequestActionBuilder: HttpRequestActionBuilder, urlFunction: Context => String, queryParams: List[(Context => String, Context => String)], params: List[(Context => String, Context => String)], headers: Map[String, String], body: Option[HttpRequestBody], followsRedirects: Option[Boolean], credentials: Option[(String, String)]) = {
-		new PostHttpRequestBuilder(httpRequestActionBuilder, urlFunction, queryParams, params, headers, body, followsRedirects, credentials)
-	}
+	def newInstanceWithQueryParam(paramKeyFunc: Context => String, paramValueFunc: Context => String) =
+		new PostHttpRequestBuilder(httpRequestActionBuilder, urlFunction, (paramKeyFunc, paramValueFunc) :: queryParams, params, headers, body, followsRedirects, credentials) with HttpRequestBuilderQueryParam
 
-	def getMethod = "POST"
+	def newInstanceWithHeaders(givenHeaders: Map[String, String]) =
+		new PostHttpRequestBuilder(httpRequestActionBuilder, urlFunction, queryParams, params, headers ++ givenHeaders, body, followsRedirects, credentials) with HttpRequestBuilderHeader
+
+	def newInstanceWithHeader(header: (String, String)) =
+		new PostHttpRequestBuilder(httpRequestActionBuilder, urlFunction, queryParams, params, headers + (header._1 -> header._2), body, followsRedirects, credentials) with HttpRequestBuilderContentType
+
+	def newInstanceWithContentType(mimeType: String) =
+		new PostHttpRequestBuilder(httpRequestActionBuilder, urlFunction, queryParams, params, headers ++ Map(ACCEPT -> mimeType, CONTENT_TYPE -> mimeType), body, followsRedirects, credentials) with HttpRequestBuilderBody
+
+	def newInstanceWithFollowsRedirect(followRedirect: Boolean) =
+		new PostHttpRequestBuilder(httpRequestActionBuilder, urlFunction, queryParams, params, headers, body, Some(followRedirect), credentials)
+
+	def newInstanceWithCredentials(username: String, password: String) =
+		new PostHttpRequestBuilder(httpRequestActionBuilder, urlFunction, queryParams, params, headers, body, followsRedirects, Some((username, password)))
+
+	def newInstanceWithStringBody(body: String) =
+		new PostHttpRequestBuilder(httpRequestActionBuilder, urlFunction, queryParams, params, headers, Some(StringBody(body)), followsRedirects, credentials) with HttpRequestBuilderParam
+
+	def newInstanceWithFileBody(filePath: String) =
+		new PostHttpRequestBuilder(httpRequestActionBuilder, urlFunction, queryParams, params, headers, Some(FilePathBody(filePath)), followsRedirects, credentials) with HttpRequestBuilderParam
+
+	def newInstanceWithTemplateBody(tplPath: String, values: Map[String, Context => String]) =
+		new PostHttpRequestBuilder(httpRequestActionBuilder, urlFunction, queryParams, params, headers, Some(TemplateBody(tplPath, values)), followsRedirects, credentials) with HttpRequestBuilderParam
+
+	def newInstanceWithParam(paramKeyFunc: Context => String, paramValueFunc: Context => String) =
+		new PostHttpRequestBuilder(httpRequestActionBuilder, urlFunction, queryParams, (paramKeyFunc, paramValueFunc) :: params, headers, body, followsRedirects, credentials) with HttpRequestBuilderOptions
 }
+

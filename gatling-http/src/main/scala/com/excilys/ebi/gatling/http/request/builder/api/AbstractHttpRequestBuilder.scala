@@ -1,4 +1,4 @@
-package com.excilys.ebi.gatling.http.request.builder.n
+package com.excilys.ebi.gatling.http.request.builder.api
 import com.excilys.ebi.gatling.http.action.HttpRequestActionBuilder
 import com.excilys.ebi.gatling.core.context.Context
 import com.excilys.ebi.gatling.http.request.HttpRequest
@@ -13,16 +13,34 @@ import com.excilys.ebi.gatling.http.util.HttpHelper._
 import scala.collection.immutable.HashMap
 import com.ning.http.client.Cookie
 import com.ning.http.client.Realm.AuthScheme
+import com.excilys.ebi.gatling.http.Predef._
+import com.excilys.ebi.gatling.http.check.HttpCheckBuilder
 
-object HttpRequestBuilder {
-	implicit def toHttpRequestActionBuilder(requestBuilder: HttpRequestBuilder) =
+object AbstractHttpRequestBuilder {
+	implicit def toHttpRequestActionBuilder(requestBuilder: AbstractHttpRequestBuilder[_]) =
 		requestBuilder.httpRequestActionBuilder withRequest (new HttpRequest(requestBuilder.httpRequestActionBuilder.requestName, requestBuilder))
 }
-class HttpRequestBuilder(val httpRequestActionBuilder: HttpRequestActionBuilder, method: String, urlFunction: Context => String,
+abstract class AbstractHttpRequestBuilder[B <: AbstractHttpRequestBuilder[B]](val httpRequestActionBuilder: HttpRequestActionBuilder, method: String, urlFunction: Context => String,
 		queryParams: List[(Context => String, Context => String)], headers: Map[String, String], followsRedirects: Option[Boolean], credentials: Option[(String, String)]) {
 
-	def newInstanceWithQueryParam(paramKeyFunc: Context => String, paramValueFunc: Context => String) =
-		new HttpRequestBuilder(httpRequestActionBuilder, method, urlFunction, (paramKeyFunc, paramValueFunc) :: queryParams, headers, followsRedirects, credentials)
+	def newInstanceWithQueryParam(paramKeyFunc: Context => String, paramValueFunc: Context => String): B with HttpRequestBuilderQueryParam
+
+	def newInstanceWithHeaders(givenHeaders: Map[String, String]): B with HttpRequestBuilderHeader
+
+	def newInstanceWithHeader(header: (String, String)): B with HttpRequestBuilderContentType
+
+	def newInstanceWithContentType(mimeType: String): B with HttpRequestBuilderOptions
+
+	def newInstanceWithFollowsRedirect(followRedirect: Boolean): B
+
+	def newInstanceWithCredentials(username: String, password: String): B
+
+	/**
+	 * Stops defining the request and adds checks on the response
+	 *
+	 * @param checkBuilders the checks that will be performed on the reponse
+	 */
+	def check(checkBuilders: HttpCheckBuilder[_]*) = httpRequestActionBuilder withRequest (new HttpRequest(httpRequestActionBuilder.requestName, this)) withProcessors checkBuilders
 
 	/**
 	 * This method actually fills the request builder to avoid race conditions

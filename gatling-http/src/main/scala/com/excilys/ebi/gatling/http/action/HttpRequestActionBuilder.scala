@@ -26,8 +26,9 @@ import com.excilys.ebi.gatling.http.request.builder.PostHttpRequestBuilder
 import com.excilys.ebi.gatling.http.request.builder.DeleteHttpRequestBuilder
 import com.excilys.ebi.gatling.http.request.builder.PutHttpRequestBuilder
 import akka.actor.TypedActor
-import com.excilys.ebi.gatling.http.request.builder.AbstractHttpRequestBuilder
+import com.excilys.ebi.gatling.http.request.builder.api.AbstractHttpRequestBuilder
 import com.excilys.ebi.gatling.http.check.HttpCheckBuilder
+import com.excilys.ebi.gatling.http.request.builder.api.HttpRequestBuilderQueryParam
 
 /**
  * HttpRequestActionBuilder class companion
@@ -77,14 +78,14 @@ class HttpRequestActionBuilder(val requestName: String, request: HttpRequest, ne
 	 * @param url the url on which this request will be made
 	 * @param interpolations context keys for interpolation
 	 */
-	def delete(url: String) = new DeleteHttpRequestBuilder(this, interpolate(url), Nil, Map(), None, None, None)
+	def delete(url: String): DeleteHttpRequestBuilder with HttpRequestBuilderQueryParam = delete(interpolate(url))
 
 	/**
 	 * Starts the definition of an HTTP request with word DELETE
 	 *
 	 * @param f the function returning the url of this request
 	 */
-	def delete(f: Context => String) = new DeleteHttpRequestBuilder(this, f, Nil, Map(), None, None, None)
+	def delete(f: Context => String) = new DeleteHttpRequestBuilder(this, f, Nil, Map(), None, None, None) with HttpRequestBuilderQueryParam
 
 	/**
 	 * Starts the definition of an HTTP request with word GET
@@ -92,14 +93,14 @@ class HttpRequestActionBuilder(val requestName: String, request: HttpRequest, ne
 	 * @param url the url on which this request will be made
 	 * @param interpolations context keys for interpolation
 	 */
-	def get(url: String) = new GetHttpRequestBuilder(this, interpolate(url), Nil, Map(), None, None)
+	def get(url: String): GetHttpRequestBuilder with HttpRequestBuilderQueryParam = get(interpolate(url))
 
 	/**
 	 * Starts the definition of an HTTP request with word GET
 	 *
 	 * @param f the function returning the url of this request
 	 */
-	def get(f: Context => String) = new GetHttpRequestBuilder(this, f, Nil, Map(), None, None)
+	def get(f: Context => String) = new GetHttpRequestBuilder(this, f, Nil, Map(), None, None) with HttpRequestBuilderQueryParam
 
 	/**
 	 * Starts the definition of an HTTP request with word POST
@@ -107,14 +108,14 @@ class HttpRequestActionBuilder(val requestName: String, request: HttpRequest, ne
 	 * @param url the url on which this request will be made
 	 * @param interpolations context keys for interpolation
 	 */
-	def post(url: String) = new PostHttpRequestBuilder(this, interpolate(url), Nil, Nil, Map(), None, None, None)
+	def post(url: String): PostHttpRequestBuilder with HttpRequestBuilderQueryParam = post(interpolate(url))
 
 	/**
 	 * Starts the definition of an HTTP request with word POST
 	 *
 	 * @param f the function returning the url of this request
 	 */
-	def post(f: Context => String) = new PostHttpRequestBuilder(this, f, Nil, Nil, Map(), None, None, None)
+	def post(f: Context => String) = new PostHttpRequestBuilder(this, f, Nil, Nil, Map(), None, None, None) with HttpRequestBuilderQueryParam
 
 	/**
 	 * Starts the definition of an HTTP request with word PUT
@@ -122,13 +123,13 @@ class HttpRequestActionBuilder(val requestName: String, request: HttpRequest, ne
 	 * @param url the url on which this request will be made
 	 * @param interpolations context keys for interpolation
 	 */
-	def put(url: String) = new PutHttpRequestBuilder(this, interpolate(url), Nil, Map(), None, None, None)
+	def put(url: String): PutHttpRequestBuilder with HttpRequestBuilderQueryParam = put(interpolate(url))
 
 	/**
 	 * Starts the definition of an HTTP request with word PUT
 	 *
 	 * @param f the function returning the url of this request
 	 */
-	def put(f: Context => String) = new PutHttpRequestBuilder(this, f, Nil, Map(), None, None, None)
+	def put(f: Context => String) = new PutHttpRequestBuilder(this, f, Nil, Map(), None, None, None) with HttpRequestBuilderQueryParam
 }
 
