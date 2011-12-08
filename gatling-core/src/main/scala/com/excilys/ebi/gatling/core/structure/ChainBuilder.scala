@@ -16,6 +16,7 @@
 package com.excilys.ebi.gatling.core.structure
 import com.excilys.ebi.gatling.core.action.builder.AbstractActionBuilder
 import com.excilys.ebi.gatling.core.action.Action
+import com.excilys.ebi.gatling.core.action.builder.GroupActionBuilder
 
 /**
  * ChainBuilder class companion
@@ -24,18 +25,19 @@ object ChainBuilder {
 	/**
 	 * DSL helper that creates a new ChainBuilder
 	 */
-	def chain = new ChainBuilder(Nil, null)
+	def chain = new ChainBuilder(Nil, null, Nil)
 }
 /**
  * This class defines chain related methods
  *
  * @param actionBuilders the builders that represent the chain of actions of a scenario/chain
  * @param next the action that will be executed after this chain
+ * @param groups groups to which all actionBuilders in this chain belong to
  */
-class ChainBuilder(actionBuilders: List[AbstractActionBuilder], next: Action)
+class ChainBuilder(actionBuilders: List[AbstractActionBuilder], next: Action, groups: List[String])
 		extends AbstractStructureBuilder[ChainBuilder](actionBuilders) {
 
-	private[core] def newInstance(actionBuilders: List[AbstractActionBuilder]) = new ChainBuilder(actionBuilders, next)
+	private[core] def newInstance(actionBuilders: List[AbstractActionBuilder]) = new ChainBuilder(actionBuilders, next, groups)
 
 	private[core] def getInstance = this
 
@@ -45,7 +47,15 @@ class ChainBuilder(actionBuilders: List[AbstractActionBuilder], next: Action)
 	 * @param next the action to be executed after the chain
 	 * @return the last built action
 	 */
-	private[core] def withNext(next: Action) = new ChainBuilder(actionBuilders, next)
+	private[core] def withNext(next: Action) = new ChainBuilder(actionBuilders, next, groups)
+
+	/**
+	 * Method that sets the group of a chain
+	 *
+	 * @param groups the list of groups in which the chain is
+	 * @return a new builder with its groups set
+	 */
+	private[core] def inGroups(groups: List[String]) = new ChainBuilder(actionBuilders, next, groups)
 
 	/**
 	 * Method that actually builds the scenario

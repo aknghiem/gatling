@@ -28,6 +28,7 @@ import org.joda.time.DateTime
  * @param executionDuration the duration of the action
  * @param resultStatus the status of the action
  * @param resultMessage the message of the action on completion
+ * @param groups the groups in which this action is
  */
 case class ActionInfo(scenarioName: String, userId: Int, action: String, executionStartDate: DateTime, executionDuration: Long, resultStatus: ResultStatus.ResultStatus,
-	resultMessage: String)
+	resultMessage: String, groups: List[String])

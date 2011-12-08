@@ -20,6 +20,8 @@ import com.excilys.ebi.gatling.core.action.builder.AbstractActionBuilder
 import com.excilys.ebi.gatling.core.action.builder.PauseActionBuilder._
 import com.excilys.ebi.gatling.core.action.builder.IfActionBuilder._
 import com.excilys.ebi.gatling.core.action.builder.WhileActionBuilder._
+import com.excilys.ebi.gatling.core.action.builder.GroupActionBuilder._
+import com.excilys.ebi.gatling.core.action.builder.GroupActionBuilder
 import com.excilys.ebi.gatling.core.action.builder.EndActionBuilder._
 import com.excilys.ebi.gatling.core.action.builder.StartActionBuilder._
 import java.util.concurrent.CountDownLatch
@@ -41,6 +43,7 @@ object ScenarioBuilder {
  * @param name the name of the scenario
  * @param actionBuilders the list of all the actions that compose the scenario
  * @param next the action that will be executed after this scenario (that can be a chain as well)
+ * @param groups the groups for all the actions of this scenario
  */
 class ScenarioBuilder(val name: String, actionBuilders: List[AbstractActionBuilder]) extends AbstractStructureBuilder[ScenarioBuilder](actionBuilders) {
 

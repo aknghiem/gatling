@@ -51,7 +51,7 @@ object SimpleActionBuilder {
 	 *
 	 * @param sessionFunction the function that will be executed by the built simple action
 	 */
-	def simpleActionBuilder(sessionFunction: (Session, Action) => Unit) = new SimpleActionBuilder(sessionFunction, null)
+	def simpleActionBuilder(sessionFunction: (Session, Action) => Unit) = new SimpleActionBuilder(sessionFunction, null, Nil)
 }
 /**
  * This class builds an SimpleAction
@@ -59,10 +59,13 @@ object SimpleActionBuilder {
  * @constructor creates a SimpleActionBuilder
  * @param sessionFunction the function that will be executed by the simple action
  * @param next the action that will be executed after the simple action built by this builder
+ * @param groups the groups to which this action belongs
  */
-class SimpleActionBuilder(sessionFunction: (Session, Action) => Unit, next: Action) extends AbstractActionBuilder {
+class SimpleActionBuilder(sessionFunction: (Session, Action) => Unit, next: Action, groups: List[String]) extends AbstractActionBuilder {
 
-	def withNext(next: Action) = new SimpleActionBuilder(sessionFunction, next)
+	def withNext(next: Action) = new SimpleActionBuilder(sessionFunction, next, groups)
+
+	def inGroups(groups: List[String]) = new SimpleActionBuilder(sessionFunction, next, groups)
 
 	def build(): Action = TypedActor.newInstance(classOf[Action], new SimpleAction(sessionFunction, next))
 }

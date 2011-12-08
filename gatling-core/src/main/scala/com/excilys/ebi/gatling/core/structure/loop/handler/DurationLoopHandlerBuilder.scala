@@ -44,6 +44,7 @@ class DurationLoopHandlerBuilder[B <: AbstractStructureBuilder[B]](structureBuil
 			List(whileActionBuilder
 				.withConditionFunction((s: Session, a: Action) => (System.currentTimeMillis - getTimerValue(s, a.getUuidAsString)) <= durationUnit.toMillis(durationValue))
 				.withLoopNext(chain)
+				.inGroups(structureBuilder.getCurrentGroups)
 				.withCounterName(counterName)))
 	}
 }

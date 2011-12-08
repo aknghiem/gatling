@@ -48,5 +48,7 @@ class EndActionBuilder(latch: CountDownLatch) extends AbstractActionBuilder {
 
 	def withNext(next: Action): AbstractActionBuilder = this
 
+	def inGroups(groups: List[String]) = this
+
 	override def toString = "End"
 }
